@@ -1,19 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TagModule } from './tag/tag.module';
-import { DatabaseConfiguration } from './database-configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeormConfig } from './database/typeorm.config';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      useClass: DatabaseConfiguration,
-    }),
-    TagModule,
-  ],
+  imports: [TypeOrmModule.forRoot(typeormConfig), TagModule],
   controllers: [AppController],
   providers: [AppService],
 })
