@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { join } from 'path';
 import { DataSourceOptions } from 'typeorm';
 
 export const typeormConfig: DataSourceOptions = {
@@ -8,7 +9,7 @@ export const typeormConfig: DataSourceOptions = {
   username: process.env.PG_USER,
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+  entities: [join(__dirname, '..', '**', '*.entity{.ts,.js}')],
   synchronize: false,
   logging: true,
   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
