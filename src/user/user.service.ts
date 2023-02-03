@@ -20,10 +20,20 @@ export class UserService {
     const existEmail = await this.userRepository.findOneBy({
       email: user.email,
     });
+    const existUsername = await this.userRepository.findOneBy({
+      username: user.username,
+    });
 
     if (existEmail) {
       throw new HttpException(
         'E-mail already exists',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    if (existUsername) {
+      throw new HttpException(
+        'Username already exists',
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
