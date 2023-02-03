@@ -5,7 +5,7 @@ import { verify } from 'jsonwebtoken';
 import { UserService } from '../user.service';
 
 interface JwtPayload {
-  id: number;
+  id: string;
 }
 
 @Injectable()

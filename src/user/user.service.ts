@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { IUserResponse } from './interfaces/user.responce';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { compare } from 'bcrypt';
-import { Expose } from 'class-transformer';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -17,11 +17,11 @@ export class UserService {
   ) {}
 
   async createUser(user: CreateUserDto): Promise<UserEntity> {
-    const userByEmail = await this.userRepository.findOneBy({
+    const existEmail = await this.userRepository.findOneBy({
       email: user.email,
     });
 
-    if (userByEmail) {
+    if (existEmail) {
       throw new HttpException(
         'E-mail already exists',
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -36,7 +36,7 @@ export class UserService {
   async login(user: LoginUserDto): Promise<UserEntity> {
     const userByEmail = await this.userRepository.findOne({
       where: { email: user.email },
-      select: ['password', 'images', 'email', 'bio', 'username'],
+      select: ['id', 'password', 'images', 'email', 'bio', 'username'],
     });
     if (!userByEmail) {
       throw new HttpException(
@@ -57,8 +57,17 @@ export class UserService {
     return userByEmail;
   }
 
-  findById(id: number): Promise<UserEntity> {
-    return this.userRepository.findOne({ where: { id } });
+  findById(id: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const user = await this.findById(id);
+    Object.assign(user, updateUserDto);
+    return await this.userRepository.save(user);
   }
 
   generateToken(user: UserEntity): string {
